@@ -6,6 +6,7 @@ from pyspark.sql import SparkSession
 
 from bank_marketing.config import ProjectConfig
 from bank_marketing.data_processor import DataProcessor
+from bank_marketing.data_saver import DatabricksSaver
 from bank_marketing.utils import create_schema
 
 # COMMAND ----------
@@ -43,6 +44,8 @@ logger.info(f"Test set shape: {test_set.shape}")
 # COMMAND ----------
 
 logger.info("Saving data to catalog")
-data_processor.save_to_catalog(train_set, test_set, spark)
+db_saver = DatabricksSaver(config, spark)
+db_saver.save(train_set, config.train_set_name)
+db_saver.save(test_set, config.test_set_name)
 
 # COMMAND ----------
