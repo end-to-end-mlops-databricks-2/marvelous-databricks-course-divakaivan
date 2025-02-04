@@ -1,6 +1,6 @@
 uv.lock
 data
-
+.ruff_cache
 
 # OS X
 .DS_Store
