@@ -1,9 +1,12 @@
 from abc import ABC, abstractmethod
+
 import pandas as pd
 from loguru import logger
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import current_timestamp, to_utc_timestamp
+
 from bank_marketing.config import ProjectConfig
+
 
 class BaseDataSaver(ABC):
     """Abstract base class for saving data."""
@@ -11,6 +14,7 @@ class BaseDataSaver(ABC):
     @abstractmethod
     def save(self, df: pd.DataFrame, name: str):
         pass
+
 
 class DatabricksSaver(BaseDataSaver):
     """Saves data to Databricks."""
