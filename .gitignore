@@ -1,3 +1,7 @@
+uv.lock
+data
+
+
 # OS X
 .DS_Store
 
@@ -95,3 +99,5 @@ dmypy.json
 # VS code configuration
 .vscode
 .history
+
+.databricks
