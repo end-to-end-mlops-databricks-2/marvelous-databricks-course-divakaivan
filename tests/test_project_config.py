@@ -1,12 +1,14 @@
 import pytest
 import yaml
 from pydantic import ValidationError
+
 from src.bank_marketing.config import ProjectConfig
+
 
 @pytest.fixture
 def config_data():
     """Fixture to provide sample YAML config"""
-    config_yaml = """ 
+    config_yaml = """
     data_path: "/data/path"
     raw_data_schema:
       col1: "IntegerType"
@@ -26,12 +28,14 @@ def config_data():
 
     return config_dict, ProjectConfig(**config_dict)
 
+
 def test_create_project_config(config_data):
     """Test creating ProjectConfig object and comparing with expected"""
     config_dict, expected_config = config_data
     config = ProjectConfig(**config_dict)
 
     assert config == expected_config
+
 
 def test_missing_field(config_data):
     """Test missing required field raises ValidationError"""
@@ -42,6 +46,7 @@ def test_missing_field(config_data):
     with pytest.raises(ValidationError):
         ProjectConfig(**incomplete_config)
 
+
 def test_invalid_type(config_data):
     """Test invalid field type raises ValidationError"""
     config_dict, _ = config_data
@@ -50,6 +55,7 @@ def test_invalid_type(config_data):
 
     with pytest.raises(ValidationError):
         ProjectConfig(**invalid_type_config)
+
 
 def test_from_yaml(tmp_path, config_data):
     """Test loading config from YAML"""
