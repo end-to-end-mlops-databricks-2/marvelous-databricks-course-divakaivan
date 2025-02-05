@@ -1,0 +1,46 @@
+raw_data_schema:
+  age: IntegerType
+  job: StringType
+  marital: StringType
+  education: StringType
+  default: StringType
+  balance: IntegerType
+  housing: StringType
+  loan: StringType
+  contact: StringType
+  day: IntegerType
+  month: StringType
+  duration: IntegerType
+  campaign: IntegerType
+  pdays: IntegerType
+  previous: IntegerType
+  poutcome: StringType
+  y: StringType
+
+catalog_name: mlops_dev
+schema_name: diva4eto
+
+train_set_name: bank_marketing_train
+test_set_name: bank_marketing_test
+
+num_features:
+  - age # "customer age (numeric)"
+  - avg_annual_balance # "average yearly balance, in euros (numeric)"
+  - last_contact_duration_in_sec # "last contact duration, in seconds (numeric)"
+  - n_contacts_prev_campaign # "number of contacts performed before this campaign and for this client"
+  - n_contacts_cur_campaign # "number of contacts performed during this campaign and for this client (numeric, includes last contact)"
+  - days_since_prev_contact # "number of days that passed by after the client was last contacted from a previous campaign (numeric, -1 means client was not previously contacted)"
+
+cat_features:
+  - job # "type of job (categorical: admin,unknown,unemployed,management,housemaid,entrepreneur,student,blue-collar,self-employed,retired,technician,services)"
+  - marital_status # "marital status (categorical: married,divorced,single; note: divorced means divorced or widowed)"
+  - education_level # "(categorical: unknown,secondary,primary,tertiary)"
+  - has_default # "has credit in default? (binary: yes,no)"
+  - has_housing_loan # "has housing loan? (binary: yes,no)"
+  - has_personal_loan # "has personal loan? (binary: yes,no)"
+  - contact_type # "contact communication type (categorical: unknown,telephone,cellular)"
+  - last_contact_day_of_week # "last contact day of the month (numeric)"
+  - last_contact_month # "last contact month of year (categorical: jan, feb, mar, ..., nov, dec)"
+  - outcome_prev_campaign # "outcome of the previous marketing campaign (categorical: unknown,other,failure,success)"
+
+target: has_subscribed # "has the client subscribed a term deposit? (binary: yes,no)"
