@@ -23,7 +23,7 @@ spark = SparkSession.builder.getOrCreate()
 schema = create_schema(config.raw_data_schema)
 logger.info("Reading raw data")
 df = spark.read.csv(
-    "/Volumes/mlops_dev/diva4eto/bank_marketing_volume/bank_marketing.csv", header=True, schema=schema, sep=";"
+    f"/Volumes/{config.catalog_name}/{config.schema_name}/bank_marketing_volume/bank_marketing.csv", header=True, schema=schema, sep=";"
 ).toPandas()
 
 # COMMAND ----------
