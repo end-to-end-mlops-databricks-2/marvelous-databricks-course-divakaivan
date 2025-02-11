@@ -79,6 +79,7 @@ class BaseModel:
     def log_model(self):
         """ Log the model """
 
+        logger.info("Starting MLFlow experiment")
         mlflow.set_experiment(self.experiment_name)
         with mlflow.start_run(tags=self.tags) as run:
             self.run_id = run.info.run_id
@@ -106,7 +107,7 @@ class BaseModel:
             signature = infer_signature(model_input=self.X_train, model_output=y_pred)
             dataset = mlflow.data.from_spark(
                 self.train_set_spark,
-                table_name=f"{self.catalog_name}.{self.schema_name}.train_set",
+                table_name=f"{self.catalog_name}.{self.schema_name}.{self.config.train_set_name}",
                 version=self.data_version
             )
             mlflow.log_input(dataset, context="training")
