@@ -44,3 +44,7 @@ cat_features:
   - outcome_prev_campaign # "outcome of the previous marketing campaign (categorical: unknown,other,failure,success)"
 
 target: has_subscribed # "has the client subscribed a term deposit? (binary: yes,no)"
+
+model_parameters:
+
+experiment_name_base: /Shared/bank_marketing_base

@@ -19,6 +19,8 @@ def mock_config():
         num_features=["age", "balance"],
         cat_features=["marital"],
         target="has_subscribed",
+        model_parameters={},
+        experiment_name_base="/experiment/base_dir",
     )
     df = pd.DataFrame(
         {

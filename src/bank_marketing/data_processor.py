@@ -31,11 +31,11 @@ class DataProcessor:
             "y": "has_subscribed",
         }
 
-    def clean_column_names(self, column_mapping: Optional[Dict[str, str]]):
+    def clean_column_names(self, column_mapping: Optional[Dict[str, str]] = None):
         """Clean column names and rename them according to the mapping"""
 
         self.df.rename(
-            columns=self._column_mapping if not column_mapping else column_mapping,
+            columns=self._column_mapping if column_mapping is None else column_mapping,
             inplace=True,
         )
 
