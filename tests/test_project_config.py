@@ -23,6 +23,8 @@ def config_data():
     cat_features:
       - "col2"
     target: "col3"
+    model_parameters:
+    experiment_name_base: "/experiment/base_dir"
     """
     config_dict = yaml.safe_load(config_yaml)
 

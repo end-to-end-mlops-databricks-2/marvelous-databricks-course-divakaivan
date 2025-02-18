@@ -150,7 +150,7 @@ class BaseModel:
         run = mlflow.get_run(self.run_id)
         metrics = run.data.to_dictionary()["metrics"]
         params = run.data.to_dictionary()["params"]
-        logger.info("✅ Dataset metadata loaded.")
+        logger.info("Dataset metadata loaded.")
 
         return metrics, params
 
