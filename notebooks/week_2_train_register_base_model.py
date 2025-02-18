@@ -1,6 +1,6 @@
 # Databricks notebook source
-from loguru import logger
 import mlflow
+from loguru import logger
 from pyspark.sql import SparkSession
 
 from bank_marketing.config import ProjectConfig, Tags
@@ -27,9 +27,9 @@ base_model.train()
 base_model.log_model()
 
 # COMMAND ----------
-run_id = mlflow.search_runs(
-    experiment_names=[config.experiment_name_base], filter_string="tags.branch='week2'"
-).run_id[0]
+run_id = mlflow.search_runs(experiment_names=[config.experiment_name_base], filter_string="tags.branch='week2'").run_id[
+    0
+]
 
 model = mlflow.sklearn.load_model(f"runs:/{run_id}/hgbc-pipeline-model")
 

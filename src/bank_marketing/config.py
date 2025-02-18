@@ -25,6 +25,7 @@ class ProjectConfig(BaseModel):
             config_dict = yaml.safe_load(f)
         return cls(**config_dict)
 
+
 class Tags(BaseModel):
     git_sha: str
     branch: str

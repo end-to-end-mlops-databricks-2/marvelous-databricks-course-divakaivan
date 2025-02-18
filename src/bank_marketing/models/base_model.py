@@ -1,12 +1,12 @@
 import mlflow
+import pandas as pd
 from loguru import logger
 from mlflow import MlflowClient
 from mlflow.models import infer_signature
-import pandas as pd
 from pyspark.sql import SparkSession
-from sklearn.pipeline import Pipeline
 from sklearn.ensemble import HistGradientBoostingClassifier
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, f1_score, precision_score, recall_score
+from sklearn.pipeline import Pipeline
 
 from bank_marketing.config import ProjectConfig, Tags
 
@@ -25,7 +25,7 @@ catalog_name, schema_name → Database schema names for Databricks tables.
 
 class BaseModel:
     def __init__(self, config: ProjectConfig, tags: Tags, spark: SparkSession):
-        """ Initialize the model with project configuration """
+        """Initialize the model with project configuration"""
 
         self.config = config
         self.spark = spark
@@ -51,8 +51,10 @@ class BaseModel:
         logger.info("Loading data from Databricks")
         self.train_set_spark = self.spark.table(f"{self.catalog_name}.{self.schema_name}.{self.config.train_set_name}")
         self.train_set = self.train_set_spark.toPandas()
-        self.test_set = self.spark.table(f"{self.catalog_name}.{self.schema_name}.{self.config.test_set_name}").toPandas()
-        self.data_version = "0" #describe history -> retrieve
+        self.test_set = self.spark.table(
+            f"{self.catalog_name}.{self.schema_name}.{self.config.test_set_name}"
+        ).toPandas()
+        self.data_version = "0"  # describe history -> retrieve
 
         self.X_train = self.train_set[self.num_features + self.cat_features]
         self.y_train = self.train_set[self.target]
@@ -61,23 +63,21 @@ class BaseModel:
         logger.info("Data successfully loaded.")
 
     def prepare_pipeline(self):
-        """ Prepare scikit-learn pipeline for training """
+        """Prepare scikit-learn pipeline for training"""
 
         logger.info("Preparing pipeline")
 
-        self.pipeline = Pipeline(steps=[
-            ('hgbc_model', HistGradientBoostingClassifier(**self.model_parameters or {}))
-        ])
+        self.pipeline = Pipeline(steps=[("hgbc_model", HistGradientBoostingClassifier(**self.model_parameters or {}))])
         logger.info("Pipeline successfully prepared.")
 
     def train(self):
-        """ Train the model """
+        """Train the model"""
 
         logger.info("🚀 Starting training...")
         self.pipeline.fit(self.X_train, self.y_train)
 
     def log_model(self):
-        """ Log the model """
+        """Log the model"""
 
         logger.info("Starting MLFlow experiment")
         mlflow.set_experiment(self.experiment_name)
@@ -87,9 +87,9 @@ class BaseModel:
             y_pred = self.pipeline.predict(self.X_test)
 
             accuracy = accuracy_score(self.y_test, y_pred)
-            precision = precision_score(self.y_test, y_pred, average='weighted')
-            recall = recall_score(self.y_test, y_pred, average='weighted')
-            f1 = f1_score(self.y_test, y_pred, average='weighted')
+            precision = precision_score(self.y_test, y_pred, average="weighted")
+            recall = recall_score(self.y_test, y_pred, average="weighted")
+            f1 = f1_score(self.y_test, y_pred, average="weighted")
 
             mlflow.log_metric("accuracy", accuracy)
             mlflow.log_metric("precision", precision)
@@ -108,23 +108,19 @@ class BaseModel:
             dataset = mlflow.data.from_spark(
                 self.train_set_spark,
                 table_name=f"{self.catalog_name}.{self.schema_name}.{self.config.train_set_name}",
-                version=self.data_version
+                version=self.data_version,
             )
             mlflow.log_input(dataset, context="training")
-            mlflow.sklearn.log_model(
-                sk_model=self.pipeline,
-                artifact_path="hgbc-pipeline-model",
-                signature=signature
-            )
+            mlflow.sklearn.log_model(sk_model=self.pipeline, artifact_path="hgbc-pipeline-model", signature=signature)
 
     def register_model(self):
-        """ Register model in Unity Catalog """
+        """Register model in Unity Catalog"""
 
         logger.info("Registering model")
         registered_model = mlflow.register_model(
-            model_uri=f'runs:/{self.run_id}/hgbc-pipeline-model',
+            model_uri=f"runs:/{self.run_id}/hgbc-pipeline-model",
             name=f"{self.catalog_name}.{self.schema_name}.bank_marketing_base_model",
-            tags=self.tags
+            tags=self.tags,
         )
         logger.info(f"Model registered under version {registered_model.version}.")
 
@@ -134,11 +130,11 @@ class BaseModel:
         client.set_registered_model_alias(
             name=f"{self.catalog_name}.{self.schema_name}.bank_marketing_base_model",
             alias="latest-model",
-            version=latest_version
+            version=latest_version,
         )
 
     def retrieve_current_run_dataset(self):
-        """ Retrieve MLflow run dataset """
+        """Retrieve MLflow run dataset"""
 
         run = mlflow.get_run(self.run_id)
         dataset_info = run.inputs.dataset_inputs[0].dataset
@@ -168,7 +164,7 @@ class BaseModel:
         Returns:
             pd.DataFrame: Pandas DataFrame with predictions
         """
-        
+
         logger.info("Loading model from MLflow")
 
         model_uri = f"models:/{self.catalog_name}.{self.schema_name}.bank_marketing_base_model@latest-model"
